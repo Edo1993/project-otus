@@ -1,3 +1,0 @@
-Host mon
-    StrictHostKeyChecking no
-    UserKnownHostsFile /dev/null
