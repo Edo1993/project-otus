@@ -1,0 +1,2 @@
+# project-otus
+wordpress
