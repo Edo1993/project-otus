@@ -1,0 +1,20 @@
+---
+- name: create gluster cluster
+  gluster_volume:
+        state: "present"
+        name: gv0
+        bricks: /srv/gluster/brick/gv0
+        cluster: "{{ gluster_host }}"
+        replicas: 2
+        options:
+          { performance.cache-size: '256MB',
+          performance.cache-max-file-size: '2MB',
+          performance.md-cache-timeout: '600',
+          performance.cache-invalidation: 'on',
+          network.ping-timeout: '5',
+          features.cache-invalidation-timeout: '600',
+          performance.stat-prefetch: 'on',
+          features.cache-invalidation: 'on' }
+        force: true
+  run_once: true
+

@@ -1,0 +1,31 @@
+---
+- name: add MySQL repo
+  yum:
+    name: "https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm"
+    state: present
+
+- name: delete mariadb
+  yum:
+    name: mariadb-libs
+    state: removed
+
+- name: install MySQL shell
+  yum:
+    name: mysql-shell
+    enablerepo: mysql80-community
+    state: present
+
+- name: copy cluster setup.js
+  copy:
+    src: setupCluster.js
+    dest: /root/setupCluster.js
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: setup cluster and add all nodes
+  command: mysqlsh --file setupCluster.js
+  args:
+    chdir: /root/
+    creates: /root/.mysqlsh/mysqlsh.log
+

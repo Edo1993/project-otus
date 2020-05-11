@@ -1,0 +1,35 @@
+---
+- name: Copy vhosts.conf
+  template: src=vhosts.conf dest=/etc/httpd/conf.d/
+  run_once: true
+
+- name: Create a directory if it does not exist
+  file:
+    path: /etc/httpd/vhosts.d
+    state: directory
+    mode: '0755'
+
+- name: Copy vhosts.conf
+  template: src=wp-project.org.conf dest=/etc/httpd/vhosts.d/
+  run_once: true
+
+- name: Restart service httpd, in all cases
+  service:
+    name: httpd
+    state: restarted
+
+- name: Copy httpd.conf
+  template: src=httpd.conf dest=/etc/httpd/conf/
+  run_once: true
+
+- name: Restart service httpd, in all cases
+  service:
+    name: httpd
+    state: restarted
+
+
+
+
+
+
+

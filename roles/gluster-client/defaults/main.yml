@@ -1,0 +1,4 @@
+---
+gluster_mount_dir: /var/gluster
+gluster_brick_name: gv0
+

@@ -1,0 +1,72 @@
+---
+- name: Install httpd
+  yum:
+    name:
+      - httpd
+      - openssl
+      - mod_ssl
+    state: present
+
+- name: Restart service httpd, in all cases
+  service:
+    name: httpd
+    state: restarted
+
+- name: Start & Enable Apache Server
+  service: name=httpd state=started enabled=yes
+
+- name: Copy the REMI repository definition
+  copy: src=remi.repo dest=/etc/yum.repos.d/
+
+- name: Copy the REMI-php72 repository definition
+  copy: src=remi-php72.repo dest=/etc/yum.repos.d/
+
+- name: Create the GPG key for REMI
+  copy: src=RPM-GPG-KEY-remi dest=/etc/pki/rpm-gpg
+
+- name: Install epel-release
+  yum:
+   name: epel-release
+   state: present
+
+- name: Install common packages
+  yum:
+    name:
+      - php
+      - php-devel
+      - php-enchant
+      - php-mbstring
+      - php-mysql
+      - php-PHPMailer
+      - php-process
+      - php-simplepie
+      - php-xml
+      - php-opcache
+      - php-curl
+      - php-gd
+      - php-mcrypt
+      - php-xmlrpc
+    state: present
+
+- name: Enable php settings override
+  copy:
+   src: z_custom.ini
+   dest: /etc/php.d/z_custom.ini
+
+- name: Make upload_tmp_dir
+  file:
+   path: /var/lib/php/upload
+   state: directory
+
+- name: Change ownership of php installation
+  file: path=/var/lib/php/ owner=root group=root state=directory recurse=yes
+
+- name: setup hostname
+  shell: echo 127.0.0.1 wp-project.org >> /etc/hosts
+  tags:
+  - skip_ansible_lint
+
+- name: Restart service httpd, in all cases
+  service:
+    name: httpd
+    state: restarted

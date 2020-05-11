@@ -1,0 +1,92 @@
+---
+- name: enable firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: open firewall ports backend
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+    - '22/tcp'
+    - '80/tcp'
+  when: >
+        ( ansible_hostname == 'backend1' ) or
+        ( ansible_hostname == 'backend2' )
+
+- name: open firewall ports mysql
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+    - '22/tcp'
+    - '3306/tcp'
+    - '33060/tcp'
+    - '33061/tcp'
+    - '42000/tcp'
+    - '42001/tcp'
+  when: >
+        ( ansible_hostname == 'sqlnode1' ) or
+        ( ansible_hostname == 'sqlnode2' ) or
+        ( ansible_hostname == 'sqlnode3' )
+
+- name: open firewall ports gluster
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+    - '22/tcp'
+    - '111/tcp'
+    - '111/udp'
+    - '24007/tcp'
+    - '49152/tcp'
+  when: >
+        ( ansible_hostname == 'glnode1' ) or
+        ( ansible_hostname == 'glnode2' )
+
+- name: open firewall ports balancers
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+    - '22/tcp'
+    - '80/tcp'
+    - '443/tcp'
+    - '8080/tcp'
+  when: >
+        ( ansible_hostname == 'haproxy1' ) or
+        ( ansible_hostname == 'haproxy2' )
+
+- name: open firewall ports for VRRP
+  firewalld:
+    rich_rule: rule protocol value="vrrp" accept
+    permanent: true
+    immediate: true
+    state: enabled
+  when: >
+        ( ansible_hostname == 'haproxy1' ) or
+        ( ansible_hostname == 'haproxy2' )
+
+- name: open firewall ports 22/80/443/514
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    immediate: true
+    state: enabled
+  with_items:
+    - '22/tcp'
+    - '80/tcp'
+    - '443/tcp'
+    - '514/udp'
+  when: ansible_hostname == 'mon'
+

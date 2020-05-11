@@ -1,0 +1,80 @@
+---
+- name: Download WordPress
+  get_url:
+   url: https://ru.wordpress.org/latest-ru_RU.tar.gz
+   dest: /srv/wordpress.tar.gz
+  run_once: true
+
+- name: Extract archive
+  unarchive:
+    src: /srv/wordpress.tar.gz
+    dest: /var/www/html/
+    remote_src: yes
+  run_once: true
+
+- name: Clean wordpress archieve
+  file:
+    state: absent
+    path: /srv/wordpress.tar.gz
+
+- name: Fetch random salts for WordPress config
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/ warn=no
+  register: "wp_salt"
+  become: no
+  tags:
+  - skip_ansible_lint
+  run_once: true
+
+- name: chown -R
+  file:
+    path: /var/www/html/wordpress
+    owner: apache
+    group: apache
+    mode: 0755
+
+- name: Copy WordPress config file
+  template: src=wp-config.php dest=/var/www/html/wordpress/
+  run_once: true
+
+- name: install SEManage
+  yum: pkg=policycoreutils-python state=present
+
+- name: set the SELinux policy for the Wordpress directory
+  command: semanage fcontext -a -t httpd_sys_content_t "/var/www/html/wordpress(/.*)?"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux policy for wp-config.php
+  command: semanage fcontext -a -t httpd_sys_script_exec_t "/var/www/html/wordpress/wp-config\.php"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux policy for wp-content directory
+  command: semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/html/wordpress/wp-content(/.*)?"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux policy for the *.php files
+  command: semanage fcontext -a -t httpd_sys_script_exec_t "/var/www/html/wordpress/.*\.php"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux policy for the Upgrade directory
+  command: semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/html/wordpress/wp-content/upgrade(/.*)?"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux policy for the Uploads directory
+  command: semanage fcontext -a -t httpd_sys_rw_content_t "/var/www/html/wordpress/wp-content/uploads(/.*)?"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux policy for the wp-includes php files
+  command: semanage fcontext -a -t httpd_sys_script_exec_t "/var/www/html/wordpress/wp-includes/.*\.php"
+  tags:
+  - skip_ansible_lint
+
+- name: set the SELinux on all the Files
+  command: restorecon -RF /var/www/html/wordpress
+  tags:
+  - skip_ansible_lint

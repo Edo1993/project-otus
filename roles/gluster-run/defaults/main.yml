@@ -1,0 +1,6 @@
+---
+gluster_host:
+  - glnode1
+  - glnode2
+
+

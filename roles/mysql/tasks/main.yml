@@ -1,0 +1,30 @@
+---
+- name: install PyMySQL from pip
+  pip:
+    name:
+      - PyMySQL
+      - cryptography
+    state: present
+
+- name: create db
+  mysql_db:
+    login_user: "{{ icluster_user }}"
+    login_password: "{{ icluster_passwd }}"
+    login_port: 6446
+    login_host: "127.0.0.1"
+    name: otus
+    collation: utf8mb4_general_ci
+    encoding: utf8mb4
+
+- name: create user for db
+  mysql_user:
+    login_user: "{{ icluster_user }}"
+    login_password: "{{ icluster_passwd }}"
+    login_port: 6446
+    login_host: "127.0.0.1"
+    name:     "{{ wp_db_user }}"
+    password: "{{ wp_db_passwd }}"
+    priv:     "otus.*:ALL"
+    host: "%"
+    state: present
+

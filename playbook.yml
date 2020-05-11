@@ -1,0 +1,97 @@
+---
+- name: Common configs
+  hosts: all
+  become: yes
+  roles:
+    - common
+    - firewalld
+
+- name: Rsyslog & Backup
+  hosts: mon
+  become: yes
+  roles:
+    - rsyslog-server
+    - bacula-server
+
+- name: Make InnoDB Cluster nodes
+  hosts:
+    - sqlnode1
+    - sqlnode2
+    - sqlnode3
+  become: yes
+  roles:
+    - icluster-node
+    - rsyslog-sender
+
+- name: Install InnoDB Cluster
+  hosts: backend1
+  become: yes
+  roles:
+    - icluster-setup
+
+- name: Install MySQL Routers
+  hosts:
+    - backend1
+    - backend2
+  become: yes
+  roles:
+    - icluster-router
+    - rsyslog-sender
+    
+- name: Make GlusterFS nodes
+  hosts:
+    - glnode1
+    - glnode2
+  become: yes
+  roles:
+    - gluster-infra
+    - gluster-setup
+    - rsyslog-sender
+
+- name: Install GlusterFS
+  hosts: glnode2
+  become: yes
+  roles:
+    - gluster-run
+
+- name: Install backend1
+  hosts: backend1
+  become: yes
+  roles:
+    - gluster-client
+    - bacula-client
+    - mysql
+    - apache
+    - redis
+    - wordpress
+    - php
+
+- name: Install backend2
+  hosts: backend2
+  become: yes
+  roles:
+    - gluster-client
+    - apache
+    - redis
+    - wordpress
+    - php
+
+- name: Install haproxies
+  hosts:
+    - haproxy1
+    - haproxy2
+  become: yes
+  roles:
+    - gluster-client
+    - ssl
+    - haproxy
+    - rsyslog-sender
+
+- name: Install keepalived
+  hosts:
+    - haproxy1
+    - haproxy2
+  become: yes
+  roles:
+    - keepalived
+

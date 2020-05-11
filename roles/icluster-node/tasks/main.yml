@@ -1,0 +1,79 @@
+---
+- name: Install mySQL-repo
+  yum:
+    name: "https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm"
+    state: present
+
+- name: Drop mariadb
+  yum:
+    name: mariadb-libs
+    state: removed
+
+- name: Install mySQL
+  yum:
+    name: mysql-community-server
+    enablerepo: mysql80-community
+    state: present
+
+- name: Install PyMySQL
+  pip:
+    name:
+      - PyMySQL
+      - cryptography
+    state: present
+
+- name: mySQL conf
+  template:
+    src: my.cnf.j2
+    dest: "/etc/my.cnf"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: mySQL restart
+  systemd:
+    name: mysqld
+    state: restarted
+
+- name: mySQL start
+  systemd:
+    name: mysqld
+    state: restarted
+    enabled: true
+
+- name: mySQL root-pass
+  shell: "grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log | awk -F ' ' '{print $(NF)}'"
+  register: generated_password
+
+- name: mySQL root-pass remove
+  lineinfile:
+    path: /var/log/mysqld.log
+    regexp: "temporary password"
+    state: absent
+
+- name: mySQL root-pass update
+  command: mysql --user root --password={{ generated_password.stdout }} --connect-expired-password --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}';"
+  when: generated_password.stdout
+
+- name: mySQL pass-policy change
+  lineinfile:
+    path: /etc/my.cnf
+    regexp: '^# validate_password.policy=LOW'
+    line: 'validate_password.policy=LOW'
+
+- name: mySQL restart
+  systemd:
+    name: mysqld
+    state: restarted
+    enabled: true
+
+- name: icluster_user create
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name:     "{{ icluster_user }}"
+    password: "{{ icluster_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    host: "%"
+    state: present
+

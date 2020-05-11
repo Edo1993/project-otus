@@ -1,0 +1,5 @@
+---
+interface: eth1
+virtual_router_id: 1
+virtual_ipaddress: 192.168.10.80
+

@@ -1,0 +1,89 @@
+---
+- name: Epel-repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install common packages
+  yum:
+    name:
+      - zip
+      - unzip
+      - bzip2
+      - vim-enhanced
+      - curl
+      - wget
+      - perl-File-FcntlLock
+      - ghostscript
+      - postfix
+      - firewalld
+      - facter
+      - git
+      - ntp
+      - tzdata
+      - policycoreutils-python
+      - python2-pip
+    state: present
+    enablerepo: epel
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    state: forcereinstall
+
+- name: Install pip packages
+  pip:
+    name:
+      - urllib3
+    state: present
+
+- name: SELinux disable
+  selinux:
+    state: disabled
+
+- name: Install timezone for ntp
+  timezone:
+    name: Europe/Moscow
+
+- name: NTP restart
+  service:
+    name: "ntpd"
+    state: restarted
+    enabled: yes
+
+- name: Perfomance settings
+  sysctl:
+    name: vm.overcommit_memory
+    value: "1"
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.conf
+
+- name: Change sokets quantity
+  sysctl:
+    name: net.core.somaxconn
+    value: "65535"
+    state: present
+    reload: true
+    sysctl_file: /etc/sysctl.conf
+
+- name: disable transparent hugepages - copy service file
+  copy:
+    src: disable-transparent-huge-pages.service
+    dest: '/usr/lib/systemd/system/disable-transparent-huge-pages.service'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: enable service disable-transparent-hugepages
+  service:
+    name: disable-transparent-huge-pages.service
+    enabled: true
+    state: started
+
+- name: create symbolic link to /usr/bin/gs
+  file:
+    src:  /usr/bin/gs
+    dest: /usr/local/bin/gs
+    state: link
+

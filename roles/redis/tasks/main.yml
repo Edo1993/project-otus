@@ -1,0 +1,31 @@
+---
+- name: install redis packages
+  yum:
+    name: redis
+    state: present
+
+- name: configure redis
+  copy:
+    src: redis.conf
+    dest: "/etc/redis.conf"
+    owner: root
+    group: root
+    mode: 0644
+    force: true
+
+- name: restart redis-server
+  systemd:
+    name: redis
+    state: restarted
+
+- name: add user apache to group redis
+  user:
+   name:   "apache"
+   groups: redis
+
+- name: start and enable redis
+  systemd:
+    name:    redis
+    state:   started
+    enabled: true
+
