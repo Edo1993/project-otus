@@ -37,10 +37,17 @@ vagrant up
 Краткое описание:
 
 Wordpress 
+
 apache и php - на серверах приложения
+
 rsyslog - сбор логов
+
 bacula - для бэкапов
+
 haproxy - балансировка нагрузки
+
 keepalived
+
 innodb mysql СУБД
+
 firewalld на хостах
