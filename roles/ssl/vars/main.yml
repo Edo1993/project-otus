@@ -1,4 +1,4 @@
 ---
-haproxy_certs_dir: '/var/gluster/certs'
-haproxy_prep_dir: '/var/gluster/prep'
+haproxy_certs_dir: '/var/wordpress/certs'
+haproxy_prep_dir: '/var/wordpress/prep'
 

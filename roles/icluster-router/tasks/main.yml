@@ -1,27 +1,27 @@
 ---
-- name: add MySQL repo
+- name: Install mySQL-repo
   yum:
     name: "https://repo.mysql.com/mysql80-community-release-el7-3.noarch.rpm"
     state: present
 
-- name: delete mariadb
+- name: MariaDB drop
   yum:
     name: mariadb-libs
     state: removed
 
-- name: install MySQL Router
+- name: Install mySQL-router
   yum:
     name: mysql-router-community
     enablerepo: mysql80-community
     state: present
 
-- name: install MySQL shell
+- name: Install mysqlsh
   yum:
     name: mysql-shell
     enablerepo: mysql80-community
     state: present
 
-- name: add mysqlsh aliases
+- name: Set alias for mysqlsh
   lineinfile:
     dest: "/root/.bashrc"
     create: yes
@@ -29,12 +29,12 @@
     line: 'alias check-cluster="mysqlsh cluster@sqlnode1:3306 -- cluster status"'
     regexp: "^alias check-cluster="
 
-- name: bootstrap MySQL Router
+- name: Config mySQL-router
   shell: echo "pass123!" | mysqlrouter --bootstrap cluster@sqlnode1:3306 --user=mysqlrouter --conf-use-sockets
   args:
     creates: /etc/mysqlrouter/mysqlrouter.conf.bak
 
-- name: start and enable MySQL Router
+- name: Start & Enable mySQL-router
   systemd:
     name: mysqlrouter
     state: started

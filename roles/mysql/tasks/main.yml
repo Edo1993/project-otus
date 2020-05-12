@@ -1,12 +1,12 @@
 ---
-- name: install PyMySQL from pip
+- name: Install pip PyMySQL
   pip:
     name:
       - PyMySQL
       - cryptography
     state: present
 
-- name: create db
+- name: Create DB
   mysql_db:
     login_user: "{{ icluster_user }}"
     login_password: "{{ icluster_passwd }}"
@@ -16,7 +16,7 @@
     collation: utf8mb4_general_ci
     encoding: utf8mb4
 
-- name: create user for db
+- name: Create user
   mysql_user:
     login_user: "{{ icluster_user }}"
     login_password: "{{ icluster_passwd }}"

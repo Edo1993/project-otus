@@ -4,7 +4,7 @@
     name: epel-release
     state: present
 
-- name: Install common packages
+- name: Setup common tools
   yum:
     name:
       - zip
@@ -41,17 +41,17 @@
   selinux:
     state: disabled
 
-- name: Install timezone for ntp
+- name: Change timezone
   timezone:
     name: Europe/Moscow
 
-- name: NTP restart
+- name: Restart ntp
   service:
     name: "ntpd"
     state: restarted
     enabled: yes
 
-- name: Perfomance settings
+- name: Change sysctl settings - vm.overcommit_memory
   sysctl:
     name: vm.overcommit_memory
     value: "1"
@@ -59,7 +59,7 @@
     reload: true
     sysctl_file: /etc/sysctl.conf
 
-- name: Change sokets quantity
+- name: Change sysctl settings - net.core.somaxconn
   sysctl:
     name: net.core.somaxconn
     value: "65535"
@@ -75,13 +75,13 @@
     group: root
     mode: 0644
 
-- name: enable service disable-transparent-hugepages
+- name: Enable service disable-transparent-hugepages
   service:
     name: disable-transparent-huge-pages.service
     enabled: true
     state: started
 
-- name: create symbolic link to /usr/bin/gs
+- name: Create symlink /usr/bin/gs
   file:
     src:  /usr/bin/gs
     dest: /usr/local/bin/gs

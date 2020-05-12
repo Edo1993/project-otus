@@ -20,8 +20,8 @@
     - sqlnode3
   become: yes
   roles:
-    - icluster-node
     - rsyslog-sender
+    - icluster-node
 
 - name: Install InnoDB Cluster
   hosts: backend1
@@ -37,28 +37,11 @@
   roles:
     - icluster-router
     - rsyslog-sender
-    
-- name: Make GlusterFS nodes
-  hosts:
-    - glnode1
-    - glnode2
-  become: yes
-  roles:
-    - gluster-infra
-    - gluster-setup
-    - rsyslog-sender
-
-- name: Install GlusterFS
-  hosts: glnode2
-  become: yes
-  roles:
-    - gluster-run
 
 - name: Install backend1
   hosts: backend1
   become: yes
   roles:
-    - gluster-client
     - bacula-client
     - mysql
     - apache
@@ -70,7 +53,6 @@
   hosts: backend2
   become: yes
   roles:
-    - gluster-client
     - apache
     - redis
     - wordpress
@@ -82,7 +64,6 @@
     - haproxy2
   become: yes
   roles:
-    - gluster-client
     - ssl
     - haproxy
     - rsyslog-sender

@@ -4,7 +4,7 @@
     path: "{{ haproxy_certs_dir }}"
     state: directory
 
-- name: Copy DH
+- name: DH groups
   copy:
     dest: "{{ haproxy_certs_dir }}/dhparam.pem"
     owner: root
@@ -35,22 +35,22 @@
     name: setuptools
     state: forcereinstall
 
-- name: Install pyOpenSSL
+- name: Setup pip pyOpenSSL
   pip:
     name: pyOpenSSL
     state: present
 
-- name: Gen openssl pem-key
+- name: Gen key.pem
   openssl_privatekey:
     path: "{{ haproxy_certs_dir }}/key.pem"
 
-- name: Gen openssl cert
+- name: Gen cert.csr
   openssl_csr:
     path: "{{ haproxy_certs_dir }}/cert.csr"
     privatekey_path: "{{ haproxy_certs_dir }}/key.pem"
     common_name: "{{ fqdn }}"
 
-- name: Gen self-signed openssl cert
+- name: Gen selfsigned cert
   openssl_certificate:
     path: "{{ haproxy_certs_dir }}/cert.pem"
     privatekey_path: "{{ haproxy_certs_dir }}/key.pem"
@@ -74,7 +74,7 @@
     src: "{{ haproxy_certs_dir }}/key.pem"
     dest: "{{ haproxy_prep_dir }}/2-key.pem"
 
-- name: Compile cert
+- name:  Mount bundle cert
   assemble:
     src: "{{ haproxy_prep_dir }}"
     dest: "{{ haproxy_certs_dir }}/wp-project.org.pem"

@@ -30,22 +30,6 @@ MACHINES = {
                      ],
              :disk => "NO",
             },
-  :glnode1 => {
-             :box_name => "centos/7",
-             :net => [
-                      {ip: '192.168.10.31', adapter: 3, netmask: "255.255.255.0"},
-                     ],
-             :disk => "YES",
-             :disk_file => "./gdisk1.vdi",
-            },
-  :glnode2 => {
-             :box_name => "centos/7",
-             :net => [
-                      {ip: '192.168.10.32', adapter: 3, netmask: "255.255.255.0"},
-                     ],
-             :disk => "YES",
-             :disk_file => "./gdisk2.vdi",
-            },
   :backend1 => {
              :box_name => "centos/7",
              :net => [

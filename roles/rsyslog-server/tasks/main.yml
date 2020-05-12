@@ -1,5 +1,5 @@
 ---
-- name: configure rsyslog listening
+- name: Rsyslog config
   lineinfile:
     path: /etc/rsyslog.conf
     regexp: '^#({{ item.regexp }}.*)'
@@ -9,12 +9,12 @@
     - { regexp: '\$ModLoad imudp' }
     - { regexp: '\$UDPServerRun 514' }
 
-- name: restart rsyslog
+- name: Rsyslog restart
   systemd:
     name: rsyslog
     state: restarted
 
-- name: configure rsyslog template
+- name: Rsyslog temp config
   blockinfile:
     path: /etc/rsyslog.conf
     content: |
@@ -23,7 +23,7 @@
       & stop
     insertafter: '$UDPServerRun 514'
 
-- name: restart rsyslog
+- name: Rsyslog restart
   systemd:
     name: rsyslog
     state: restarted

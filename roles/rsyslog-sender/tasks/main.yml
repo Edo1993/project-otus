@@ -1,5 +1,5 @@
 ---
-- name: configure rsyslog send crit messages
+- name: Rsyslog config to send alerts
   blockinfile:
     path: /etc/rsyslog.conf
     marker: "# {mark} ANSIBLE MANAGED BLOCK: enable remote logging"
@@ -8,7 +8,7 @@
       *.=warning @192.168.10.250:514
       # ### end of the forwarding rule ###
 
-- name: restart rsyslog
+- name: Rsyslog restart
   systemd:
     name: rsyslog
     state: restarted
