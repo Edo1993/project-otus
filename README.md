@@ -41,7 +41,7 @@ ________________________________________________________________________________
 
 Схема проекта
 
-![Img_alt](https://github.com/Edo1993/project-otus/blob/master/schema.png)
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/schema1.png)
 
 Развернуть кластер
 
