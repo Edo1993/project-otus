@@ -90,3 +90,25 @@ cluster.rescan()
 
 ![Img_alt](https://github.com/Edo1993/project-otus/blob/master/4.png)
 
+На vm *sqlnode2* перезапустила сервис mysql
+
+```
+systemctl restart mysqld.service
+```
+
+После рестарта - на vm с запущенным mysqlsh продолжила
+
+```
+var cluster=dba.getCluster(); cluster.addInstance('cluster@sqlnode2:3306')
+cluster.rescan()
+```
+Добавили ноду *sqlnode2* в кластер
+
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/5.png)
+
+Проверяем состояние кластера - ``` var cluster=dba.getCluster(); cluster.status()``` - все 3 ноды в статусе ONLINE, 
+статус кластера 
+```
+        "status": "OK", 
+        "statusText": "Cluster is ONLINE and can tolerate up to ONE failure.", 
+```
