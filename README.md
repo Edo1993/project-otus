@@ -62,6 +62,8 @@ ________________________________________________________________________________
 
 - логи rsyslog по серверам приложения неинформативные чуть более, чем полностью.
 
+
+
 1) Исправляем проблему с кластером 
 
 ![Img_alt](https://github.com/Edo1993/project-otus/blob/master/1.png)
@@ -114,3 +116,5 @@ cluster.rescan()
 ```
 
 ![Img_alt](https://github.com/Edo1993/project-otus/blob/master/6.png)
+
+2) Логи
