@@ -66,6 +66,10 @@ ________________________________________________________________________________
 
 1) Исправляем проблему с кластером 
 
+помогли статьи 
+[Working with InnoDB Cluster](https://docs.oracle.com/cd/E17952_01/mysql-5.7-en/mysql-innodb-cluster-working-with-cluster.html)
+[MySQL Shell API - Cluster Class Reference](https://dev.mysql.com/doc/dev/mysqlsh-api-javascript/8.0/classmysqlsh_1_1dba_1_1_cluster.html)
+
 ![Img_alt](https://github.com/Edo1993/project-otus/blob/master/1.png)
 
 Нода sqlnode2 в статусе MISSING, поэтому кластер не в том состоянии, что нас устроит -
