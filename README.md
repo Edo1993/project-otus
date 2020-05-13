@@ -64,3 +64,29 @@ ________________________________________________________________________________
 
 1) Испавляем проблему с кластером 
 
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/1.png)
+
+Нода sqlnode2 в статусе MISSING, поэтому кластер не в том состоянии, что нас устроит -
+ 
+```
+        "status": "OK_NO_TOLERANCE", 
+        "statusText": "Cluster is NOT tolerant to any failures. 1 member is not active", 
+```
+
+vm для sqlnode2 активна, поэтому пробую через mysqlsh подключиться к ноде sqlnode2 - не прокатывает.
+
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/2.png)
+
+Снова подключаюсь к корректной ноде, выполняю команды
+```
+var cluster=dba.getCluster(); cluster.status()
+cluster.rescan()
+```
+
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/3.png)
+
+Команда ```cluster.rescan()``` находит, что нода *sqlnode2* не является частью кластера, удаляем её.
+При запросе статуса кластера видим, что сейчас в него входят только 2 ноды - *sqlnode1*, *sqlnode3*.
+
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/4.png)
+
