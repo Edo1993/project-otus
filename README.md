@@ -112,3 +112,5 @@ cluster.rescan()
         "status": "OK", 
         "statusText": "Cluster is ONLINE and can tolerate up to ONE failure.", 
 ```
+
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/6.png)
