@@ -180,7 +180,9 @@ if $programname == 'httpd' then @@192.168.10.250
 systemctl restart httpd.service
 systemctl restart rsyslog.service
 ```
+Итого, что имеем - лог на сервере мониторинга mon
 
+![Img_alt](https://github.com/Edo1993/project-otus/blob/master/7.png)
 
 3) Redis 
 
