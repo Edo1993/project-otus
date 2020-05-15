@@ -125,6 +125,61 @@ cluster.rescan()
 
 2) Логи
 
+В ходе проверки было выявлено, что логи, например, по входу в приложение, не пишутся.
+Что было сделано для исправления:
+
+- изменён конфиг файл wordpress [wp-config.php](https://github.com/Edo1993/project-otus/blob/master/roles/wordpress/templates/wp-config.php)
+добавлены строки :
+
+```
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+```
+
+- изменён конфиг файл на клиентах для rsyslog - rsyslog.conf, включена отправка всех сообщений, а не только ошибочных. В playbook это внесено в виде изменений в tasks в роль [rsyslog-sender](https://github.com/Edo1993/project-otus/blob/master/roles/rsyslog-sender/tasks/main.yml)
+
+
+```
+*.* @192.168.10.250:514
+```
+- на vm с приложениями backend1 и backend2 добавлены конфиг-файлы для отправки логов приложения wordpress на удаленный сервер с логами - mon.
+
+Для отправки логов доступа -  
+
+```
+[root@backend1 rsyslog.d]# cat /etc/rsyslog.d/wordpress_access.conf 
+$ModLoad imfile
+
+$InputFileName /var/log/httpd/access_log              # or any log file on your server
+$InputFileTag backend_httpd_access:                                    # assign a unique tag so you can search on loggly easily
+$InputFileSeverity info
+$InputFileStateFile httpdlog1
+$InputRunFileMonitor                                          # Include this so the imfile module will be able to scan the next file.
+
+if $programname == 'httpd' then @@192.168.10.250
+```
+
+Для отправки ошибок -  
+
+```
+[root@backend1 rsyslog.d]# cat /etc/rsyslog.d/wordpress_error.conf 
+$ModLoad imfile
+
+$InputFileName /var/log/httpd/error_log              # or any log file on your server
+$InputFileTag backend_httpd_error:                                    # assign a unique tag so you can search on loggly easily
+$InputFileSeverity info
+$InputFileStateFile httpdlog1
+$InputRunFileMonitor                                          # Include this so the imfile module will be able to scan the next file.
+
+if $programname == 'httpd' then @@192.168.10.250
+```
+
+После обновления конфигов - перезапустить сервисы 
+
+```
+systemctl restart httpd.service
+systemctl restart rsyslog.service
+```
 
 
 3) Redis 
