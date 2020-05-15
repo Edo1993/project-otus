@@ -5,8 +5,14 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK: enable remote logging"
     content: |
       # ### begin forwarding rule ###
-      *.=warning @192.168.10.250:514
+      *.* @192.168.10.250:514
       # ### end of the forwarding rule ###
+
+- name: Copy wp-accesslog
+  copy: src=wordpress_access.conf dest=/etc/rsyslog.d/
+
+- name: Copy wp-errorlog
+  copy: src=wordpress_error.conf dest=/etc/rsyslog.d/
 
 - name: Rsyslog restart
   systemd:

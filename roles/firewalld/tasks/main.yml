@@ -14,6 +14,7 @@
   with_items:
     - '22/tcp'
     - '80/tcp'
+    - '6379/tcp'
   when: >
         ( ansible_hostname == 'backend1' ) or
         ( ansible_hostname == 'backend2' )
