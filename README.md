@@ -184,6 +184,8 @@ systemctl restart rsyslog.service
 
 ![Img_alt](https://github.com/Edo1993/project-otus/blob/master/7.png)
 
+
+
 3) Redis 
 
 - так же на защите обнаружили, что если положить один из серверов приложения - не сохраняется сессия.
